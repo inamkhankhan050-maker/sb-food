@@ -564,8 +564,9 @@
   function toast(msg) { var t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('show'); }, 2600); }
 
   function newBill() {
-    if (!confirm('Naya bill shuru karein? Ye bill saaf ho jayega.')) return;
-    bill = blankBill(); fill(); toast('Naya bill tayyar');
+    if (!confirm('Clear All? Naam, saari lines, Last Balance aur Received sab mit jayenge.')) return;
+    try { if (storage) storage.removeItem(KEY); } catch (e) {}
+    bill = blankBill(); stampKey = ''; fill(); toast('Sab clear ho gaya');
   }
   function isBlank(r) { return !(r.qty || r.wt || r.part || r.rate); }
   function fill() {
