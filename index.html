@@ -53,6 +53,10 @@ button,input{font-family:inherit;color:inherit}
 .lb{padding:0 8px!important}
 .tb td.c-q,.tb td.c-w,.tb td.c-r{text-align:center}
 .c-a{text-align:right;padding:0 8px!important}
+.c-a .avg{display:block;font-size:10px;font-weight:500;color:#5B6574;line-height:1}
+.c-a .avg:empty{display:none}
+.rule{flex-basis:100%;font-weight:500;color:#374151}
+.addr2{color:var(--red2);font-weight:600;font-size:clamp(14px,3.6vw,22px);padding:6px 0 8px;border-top:2px solid var(--line)}
 .c-a.err .amt{color:#B91C1C}
 .tb input{width:100%;height:100%;min-height:46px;border:0;background:transparent;font:inherit;font-weight:700;text-align:center;padding:0 4px;outline:none;border-radius:0}
 .tb input:focus{background:#fff;box-shadow:inset 0 0 0 2px #15803D}
@@ -80,6 +84,7 @@ button,input{font-family:inherit;color:inherit}
   .tb input::placeholder{color:transparent}
   .tb input:focus{box-shadow:none;background:transparent}
   .note{color:transparent!important}
+  .c-a .avg{display:none}
   .co{font-size:72px}.contact{font-size:18px}.tb th,.tb td{font-size:19px;height:40px}.tb input{min-height:38px}
 }
 
@@ -119,7 +124,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     <button class="btn wa" id="btnWa"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.1z"/></svg>WhatsApp PDF</button>
   </div>
   <div class="settings" id="settings">
-    <label>Labour ₹ / piece <input id="setLab" inputmode="decimal" aria-label="Labour rupees per piece"></label>
+    <span class="rule">Labour (har line ke average se): 2.5 kg se kam → Qty ÷ 9 × 5 · 2.5–2.99 → ÷ 8 × 5 · 3 kg+ → ÷ 7 × 5</span>
     <label>Samiti % <input id="setSam" inputmode="decimal" data-f="rate" aria-label="Samiti percent"></label>
     <label class="chk"><input type="checkbox" id="setRound"> Total Bill ₹10 par round (labour mein adjust)</label>
   </div>
@@ -132,10 +137,11 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
       <div class="contact">NUNTUN: 8178357317, 7011155231</div>
       <div class="co">SB FOOD</div>
       <div class="hd-row">
-        <div class="addr"></div>
+        <div class="addr">Poultry Market Ghazipur</div>
         <div class="dbox dl">Date</div>
         <label class="dbox dv"><span id="dateTxt"></span><input type="date" id="date" aria-label="Bill date"></label>
       </div>
+      <div class="addr2">Delhi 110096</div>
     </div>
     <table class="tb">
       <colgroup><col class="w-q"><col class="w-w"><col class="w-p"><col class="w-r"><col class="w-a"></colgroup>
@@ -413,8 +419,8 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
   var SHOP = {
     company: 'SB FOOD',
     contact: 'NUNTUN: 8178357317, 7011155231',
-    address1: '',   // add shop address here when available
-    address2: ''
+    address1: 'Poultry Market Ghazipur',
+    address2: 'Delhi 110096'
   };
 
   var KEY = 'sbfood-bill-v1', SET_KEY = 'sbfood-settings-v1', DEF_ROWS = 11;
@@ -451,20 +457,29 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     if (C.hasExpr(s)) { var e = C.evalExpr(s, 0); s = e === null ? 'x' : e; }
     return /^\d+$/.test(s) ? parseInt(s, 10) : NaN;
   }
+  /* Labour rule by average size (kg per piece) of each line:
+     below 2.5 kg → Qty ÷ 9 × 5 · 2.5 to below 3 kg → Qty ÷ 8 × 5 · 3 kg and above → Qty ÷ 7 × 5
+     No weight on the line → ÷ 8 × 5. */
+  function labDiv(q, g) {
+    if (!(q > 0)) return 0;
+    if (!(g > 0)) return 8;
+    if (g < q * 2500) return 9;
+    if (g < q * 3000) return 8;
+    return 7;
+  }
   function compute() {
-    var m = { rows: [], qty: 0, grams: 0, total: 0, bad: false };
+    var m = { rows: [], qty: 0, grams: 0, total: 0, labourOrig: 0, bad: false };
     bill.rows.forEach(function (r) {
       var q = qtyOf(r.qty), g = num(r.wt, 3), rt = num(r.rate, 2), amt = null;
       var bad = isNaN(q) || isNaN(g) || isNaN(rt);
       if (!bad && g > 0 && rt > 0) amt = Math.floor((g * rt + 500) / 1000);
-      if (!bad) { m.qty += q; m.grams += g; if (amt) m.total += amt; }
+      var div = labDiv(q, g), lab = (!bad && q > 0 && div) ? Math.floor((q * 1000 / div + 1) / 2) : 0; // q×5/div rupees → paise, half-up
+      if (!bad) { m.qty += q; m.grams += g; if (amt) m.total += amt; m.labourOrig += lab; }
       if (bad) m.bad = true;
-      m.rows.push({ q: q, g: g, rt: rt, amt: amt, bad: bad });
+      m.rows.push({ q: q, g: g, rt: rt, amt: amt, bad: bad, div: div, lab: lab });
     });
     var pct = num(set.samiti, 2); if (isNaN(pct)) pct = 0;           // percent ×100
-    var lr = num(set.labour, 3); if (isNaN(lr)) lr = 0;              // rupees ×1000 per piece
     m.samiti = Math.floor(m.total * pct / 10000 / 100) * 100;
-    m.labourOrig = Math.floor((m.qty * lr + 5) / 10);
     var before = m.total + m.samiti + m.labourOrig;
     m.adj = (set.round && m.total > 0) ? (1000 - before % 1000) % 1000 : 0;
     m.labour = m.labourOrig + m.adj;
@@ -487,7 +502,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     bill.rows.forEach(function (r, i) {
       h += '<tr class="ln"><td class="c-q">' + inp(i, 'qty', 'numeric', 'n') + '</td><td class="c-w">' + inp(i, 'wt', 'decimal', 'n') + '</td>' +
         '<td class="c-p">' + inp(i, 'part', '', '') + '</td><td class="c-r">' + inp(i, 'rate', 'decimal', 'n') + '</td>' +
-        '<td class="c-a"><span class="amt" id="amt' + i + '"></span></td></tr>';
+        '<td class="c-a"><span class="amt" id="amt' + i + '"></span><span class="avg" id="avg' + i + '"></span></td></tr>';
     });
     $('rows').innerHTML = h;
   }
@@ -505,7 +520,9 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     $('tLab').textContent = m.total ? money(m.labour) : '';
     $('tBill').textContent = m.totalBill ? money(m.totalBill) : '';
     $('tGrand').textContent = (m.totalBill || m.bal || m.rec) ? (m.grand < 0 ? '−' + money(-m.grand) : money(m.grand)) : '';
-    $('labNote').textContent = m.qty ? (C.formatInt(m.qty) + ' pc × ₹' + set.labour + ' = ' + C.formatINR(m.labourOrig, { decimals: 2 }) + (m.adj ? ' + round-off ' + C.formatINR(m.adj, { decimals: 2 }) : '')) : '';
+    var parts = []; m.rows.forEach(function (r) { if (r.lab) parts.push(C.formatInt(r.q) + '÷' + r.div + '×5'); });
+    $('labNote').textContent = parts.length ? parts.join(' + ') + (m.adj ? ' + round ' + C.formatINR(m.adj, { decimals: 2 }) : '') : '';
+    m.rows.forEach(function (r, i) { var el = $('avg' + i); if (el) el.textContent = (r.q > 0 && r.g > 0 && !r.bad) ? 'avg ' + C.averageKg(r.g, r.q) + ' · ÷' + r.div : ''; });
     $('words').textContent = m.grand > 0 ? C.amountInWords(m.grand) : '';
     $('dateTxt').textContent = dateText(bill.date);
     save();
@@ -639,7 +656,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
   }
   function fill() {
     $('name').value = bill.name; $('date').value = bill.date; $('bal').value = bill.bal; $('rec').value = bill.rec;
-    $('setLab').value = set.labour; $('setSam').value = set.samiti; $('setRound').checked = !!set.round;
+    $('setSam').value = set.samiti; $('setRound').checked = !!set.round;
     renderRows(); update();
   }
 
@@ -657,7 +674,6 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     $('date').addEventListener('change', function () { bill.date = this.value || todayISO(); update(); });
     $('bal').addEventListener('input', function () { bill.bal = this.value; update(); });
     $('rec').addEventListener('input', function () { bill.rec = this.value; update(); });
-    $('setLab').addEventListener('input', function () { set.labour = this.value.trim() || '0'; update(); });
     $('setSam').addEventListener('input', function () { set.samiti = this.value.trim() || '0'; update(); });
     $('setRound').addEventListener('change', function () { set.round = this.checked; update(); });
     $('btnNew').addEventListener('click', newBill);
