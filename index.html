@@ -19,6 +19,7 @@ button,input{font-family:inherit;color:inherit}
 .brand p{margin:1px 0 0;font-size:12px;color:var(--muted)}
 .acts{max-width:860px;margin:0 auto;padding:6px 14px 10px;display:flex;flex-wrap:wrap;gap:8px}
 .btn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border:1px solid #CBD5C0;border-radius:9px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn i{font-style:normal;display:inline-flex}
 .btn:active{transform:translateY(1px)}
 .btn.pr{background:#14532D;color:#fff;border-color:#14532D}
 .btn.pdf{background:#A30E0E;color:#fff;border-color:#A30E0E}
@@ -74,7 +75,28 @@ button,input{font-family:inherit;color:inherit}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:80;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%)}
 
-@media (max-width:520px){.tb th,.tb td{height:42px}.tb input{min-height:40px}.btn{height:36px;padding:0 10px;font-size:13px}}
+@media (max-width:520px){
+  .bar-in{display:none}
+  .acts{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;padding:6px 6px}
+  .acts .btn{flex-direction:column;height:46px;padding:2px 0;gap:1px;font-size:10.5px;justify-content:center;border-radius:8px}
+  .acts .btn i{font-size:17px;line-height:1}
+  .acts .btn svg{width:17px;height:17px}
+  .page{padding:6px 6px 16px}
+  .contact{font-size:12px;padding:5px 4px 0}
+  .co{font-size:40px;line-height:1.1;padding:0 0 4px}
+  .logoflip{top:20px;width:46px;height:46px;left:6px}
+  .dbox{min-height:32px;font-size:13px}
+  .addr{font-size:12px}
+  .addr2{font-size:12.5px;padding:4px 0}
+  .tb th,.tb td{height:32px;font-size:14px}
+  .tb input{min-height:30px}
+  .nmv input{font-size:17px}
+  .sum td{height:31px}
+  .c-a .avg{display:none}
+  .note{font-size:9px!important}
+  .words{font-size:11px;padding:4px 8px}
+  .tip{display:none}
+}
 
 @media print{
   @page{size:A4 portrait;margin:10mm}
@@ -128,12 +150,12 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     <div class="brand"><h1>SB FOOD Bill</h1><p>Calculator · Print · WhatsApp PDF</p></div>
   </div>
   <div class="acts">
-    <button class="btn" id="btnNew">🧾 Naya Bill</button>
-    <button class="btn" id="btnRow">＋ Line</button>
-    <button class="btn" id="btnSet">⚙️ Rate</button>
-    <button class="btn pdf" id="btnPdf">⬇️ PDF Download</button>
-    <button class="btn pr" id="btnPrint">🖨️ Print</button>
-    <button class="btn wa" id="btnWa"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.1z"/></svg>WhatsApp par Share</button>
+    <button class="btn" id="btnNew"><i>🧾</i><span>Naya Bill</span></button>
+    <button class="btn" id="btnRow"><i>＋</i><span>Line</span></button>
+    <button class="btn" id="btnSet"><i>⚙️</i><span>Rate</span></button>
+    <button class="btn pdf" id="btnPdf"><i>⬇️</i><span>PDF</span></button>
+    <button class="btn pr" id="btnPrint"><i>🖨️</i><span>Print</span></button>
+    <button class="btn wa" id="btnWa"><i><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.1z"/></svg></i><span>WhatsApp</span></button>
   </div>
   <div class="settings" id="settings">
     <span class="rule">Labour (har line ke average se): 2.5 kg se kam → Qty ÷ 9 × 5 · 2.5–2.99 → ÷ 8 × 5 · 3 kg+ → ÷ 7 × 5</span>
@@ -437,7 +459,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     address2: 'Poultry Market Ghazipur Delhi 110096'
   };
 
-  var KEY = 'sbfood-bill-v1', SET_KEY = 'sbfood-settings-v1', DEF_ROWS = 11;
+  var KEY = 'sbfood-bill-v1', SET_KEY = 'sbfood-settings-v1', DEF_ROWS = 4;
   var storage = null;
   try { storage = window.localStorage; storage.setItem('__t', '1'); storage.removeItem('__t'); } catch (e) { storage = null; }
 
@@ -680,7 +702,10 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     if (!confirm('Naya bill shuru karein? Ye bill saaf ho jayega.')) return;
     bill = blankBill(); fill(); toast('Naya bill tayyar');
   }
+  function isBlank(r) { return !(r.qty || r.wt || r.part || r.rate); }
   function fill() {
+    while (bill.rows.length > DEF_ROWS && isBlank(bill.rows[bill.rows.length - 1])) bill.rows.pop();
+    while (bill.rows.length < DEF_ROWS) bill.rows.push(blankRow());
     $('name').value = bill.name; $('date').value = bill.date; $('bal').value = bill.bal; $('rec').value = bill.rec;
     $('setSam').value = set.samiti; $('setRound').checked = !!set.round;
     renderRows(); update();
