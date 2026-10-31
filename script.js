@@ -419,7 +419,7 @@
 
   /* ---------- Canvas (for WhatsApp PDF) — same look as the printed bill ---------- */
   var HEN = new Image(); HEN.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NyIgZmlsbD0iI0ZGRjhFNyIgc3Ryb2tlPSIjQTMwRTBFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNDQgOTYgbC00IDEyIE00MCAxMDggaC03IE00MCAxMDggaDYgTTY0IDk2IGwyIDEyIE02NiAxMDggaC03IE02NiAxMDggaDciIHN0cm9rZT0iI0UwOEEwMCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0yMiA1MiBDMTQgNDAgMTggMjYgMjggMzAgQzI2IDM4IDMwIDQ0IDM0IDQ2IFoiIGZpbGw9IiM4QjNBMEUiLz48cGF0aCBkPSJNMjAgNjAgQzE2IDQ2IDI0IDM2IDMyIDQwIEMzMCA0OCAzNCA1NCAzOCA1NiBaIiBmaWxsPSIjQjU1MzFBIi8+PGVsbGlwc2UgY3g9IjU0IiBjeT0iNzAiIHJ4PSIzMiIgcnk9IjI2IiBmaWxsPSIjQzg2NTFFIi8+PHBhdGggZD0iTTM2IDY2IEM0NiA4NCA3MCA4OCA4MiA3NCBDNzYgOTIgNTAgOTYgMzggODIgWiIgZmlsbD0iIzlDNEExNCIvPjxwYXRoIGQ9Ik00NCA2MiBDNTIgNTQgNjYgNTYgNzAgNjYgQzYyIDYyIDUyIDYyIDQ0IDcwIFoiIGZpbGw9IiNFNzg4M0EiLz48cGF0aCBkPSJNNzAgNjAgQzcwIDQwIDc4IDI2IDkwIDI2IEMxMDAgMjYgMTA0IDM2IDEwMCA0NiBDOTYgNTYgODggNjIgODQgNzIgWiIgZmlsbD0iI0Q5N0EyQiIvPjxwYXRoIGQ9Ik04NCAyMiBDODIgMTQgODggMTAgOTEgMTYgQzkyIDkgOTkgOSA5OCAxNyBDMTAyIDEzIDEwNyAxNyAxMDIgMjMgWiIgZmlsbD0iI0UxMUQyRSIvPjxwYXRoIGQ9Ik0xMDAgMzQgbDEyIDQgLTEyIDUgWiIgZmlsbD0iI0Y1QjMwMSIvPjxwYXRoIGQ9Ik05OCA0NiBDMTAyIDQ4IDEwNCA1NCA5OSA1NyBDOTUgNTUgOTUgNDkgOTggNDYgWiIgZmlsbD0iI0UxMUQyRSIvPjxjaXJjbGUgY3g9IjkyIiBjeT0iMzMiIHI9IjMuNCIgZmlsbD0iIzExMSIvPjxjaXJjbGUgY3g9IjkzIiBjeT0iMzIiIHI9IjEuMSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==';
-  var COL = { green: '#DCFCE7', light: '#F7FAF5', grey: '#14532D', red: '#FFFFFF', red2: '#FDE68A', ink: '#1F2937', cream: '#FFFBEB', line: '#A7BFA3', dark: '#14532D' };
+  var COL = { green: '#FDE68A', light: '#FFFDF7', grey: '#9A3412', red: '#FFFFFF', red2: '#FDE68A', ink: '#431407', cream: '#FFF7ED', line: '#D9B98A', dark: '#7C2D12' };
   function billCanvas() {
     var m = compute();
     var used = [];
@@ -434,7 +434,7 @@
     var H = 40 + headH + RH * 2 + RH * nLines + RH * 9 + 200;
     var cv = document.createElement('canvas'); cv.width = W * S; cv.height = H * S;
     var g = cv.getContext('2d'); g.scale(S, S);
-    g.fillStyle = '#F6F3EA'; g.fillRect(0, 0, W, H);
+    g.fillStyle = '#FFFBEB'; g.fillRect(0, 0, W, H);
     function t(s, x, y, size, color, weight, align) { g.font = (weight || 600) + ' ' + size + 'px ' + F; g.fillStyle = color || COL.ink; g.textAlign = align || 'left'; g.textBaseline = 'middle'; g.fillText(s, x, y); }
     function box(x, y, w, h, fill) { if (fill) { g.fillStyle = fill; g.fillRect(x, y, w, h); } g.strokeStyle = COL.line; g.lineWidth = 1.2; g.strokeRect(x, y, w, h); }
     function fit(s, size, maxW, weight) { g.font = (weight || 600) + ' ' + size + 'px ' + F; while (size > 12 && g.measureText(s).width > maxW) { size -= 1; g.font = (weight || 600) + ' ' + size + 'px ' + F; } return size; }
@@ -477,7 +477,7 @@
       else box(cx[0], y, cw[0] + cw[1], RH, COL.light);
       box(cx[2], y, cw[2], RH, fill || COL.light); t(label, cx[2] + 10, y + RH / 2, 26, fill === COL.dark ? '#fff' : COL.ink, 700, 'left');
       box(cx[3], y, cw[3], RH, COL.light);
-      box(cx[4], y, cw[4], RH, fill || COL.light); if (val) t(val, cx[5] - 10, y + RH / 2, 27, fill === COL.dark ? '#fff' : COL.ink, 700, 'right');
+      box(cx[4], y, cw[4], RH, fill || COL.light); if (val) t(val, cx[5] - 10, y + RH / 2, 27, fill === COL.dark ? '#FACC15' : COL.ink, 700, 'right');
       y += RH;
     }
     sumRow('Total', m.total ? money(m.total) : '', COL.green, [m.qty ? C.formatInt(m.qty) : '', m.grams ? C.formatKg(m.grams) : '']);
