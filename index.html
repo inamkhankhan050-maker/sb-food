@@ -33,8 +33,7 @@ button,input{font-family:inherit;color:inherit}
 .page{max-width:860px;margin:0 auto;padding:16px 10px 40px}
 .bill{background:var(--light);border:2px solid var(--line)}
 .hd{background:var(--green);border-bottom:2px solid var(--line);text-align:center;position:relative}
-.hen{position:absolute;left:8px;top:clamp(30px,6vw,44px);width:clamp(54px,14vw,96px);height:auto;animation:peck 2.4s ease-in-out infinite;transform-origin:50% 90%}
-@keyframes peck{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-8deg)}86%{transform:rotate(4deg)}}
+
 .contact{color:var(--red2);font-weight:700;font-size:clamp(13px,3.4vw,20px);padding:10px 8px 0}
 .co{color:var(--red);font-weight:800;font-size:clamp(46px,13vw,80px);line-height:1.15;letter-spacing:.5px;padding:2px 0 6px}
 .hd-row{display:grid;grid-template-columns:62.8% 17.1% 20.1%;align-items:stretch}
@@ -87,10 +86,18 @@ button,input{font-family:inherit;color:inherit}
   .tb input::placeholder{color:transparent}
   .tb input:focus{box-shadow:none;background:transparent}
   .note{color:transparent!important}
-  .hen{animation:none;width:90px}
+  .logoflip{width:90px;height:90px}.logoflip .face{animation:none!important}.logoflip .f2{display:none}
   .c-a .avg{display:none}
   .co{font-size:72px}.contact{font-size:18px}.tb th,.tb td{font-size:19px;height:40px}.tb input{min-height:38px}
 }
+
+/* flipping logo: chicken ⇄ SB FOOD every 2 s */
+.logoflip{position:absolute;left:8px;top:clamp(30px,6vw,44px);width:clamp(54px,14vw,96px);height:clamp(54px,14vw,96px);perspective:400px}
+.logoflip .face{position:absolute;inset:0;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.logoflip .f1{animation:flipA 4s ease-in-out infinite}
+.logoflip .f2{animation:flipB 4s ease-in-out infinite}
+@keyframes flipA{0%,40%{transform:rotateY(0) scale(1)}10%{transform:rotateY(0) rotate(-8deg)}20%{transform:rotateY(0) rotate(4deg)}50%,90%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
+@keyframes flipB{0%,40%{transform:rotateY(-180deg)}50%,90%{transform:rotateY(0) scale(1)}70%{transform:rotateY(0) scale(1.08)}100%{transform:rotateY(180deg)}}
 
 .calc-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;background:#EEF2F0;border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(0,0,0,.12);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
 .calc-bar.show{display:block}
@@ -139,7 +146,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
 <main class="page">
   <div class="bill" id="bill">
     <div class="hd">
-      <img class="hen" alt="Zinda chicken" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NyIgZmlsbD0iI0ZGRjhFNyIgc3Ryb2tlPSIjQTMwRTBFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNDQgOTYgbC00IDEyIE00MCAxMDggaC03IE00MCAxMDggaDYgTTY0IDk2IGwyIDEyIE02NiAxMDggaC03IE02NiAxMDggaDciIHN0cm9rZT0iI0UwOEEwMCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0yMiA1MiBDMTQgNDAgMTggMjYgMjggMzAgQzI2IDM4IDMwIDQ0IDM0IDQ2IFoiIGZpbGw9IiM4QjNBMEUiLz48cGF0aCBkPSJNMjAgNjAgQzE2IDQ2IDI0IDM2IDMyIDQwIEMzMCA0OCAzNCA1NCAzOCA1NiBaIiBmaWxsPSIjQjU1MzFBIi8+PGVsbGlwc2UgY3g9IjU0IiBjeT0iNzAiIHJ4PSIzMiIgcnk9IjI2IiBmaWxsPSIjQzg2NTFFIi8+PHBhdGggZD0iTTM2IDY2IEM0NiA4NCA3MCA4OCA4MiA3NCBDNzYgOTIgNTAgOTYgMzggODIgWiIgZmlsbD0iIzlDNEExNCIvPjxwYXRoIGQ9Ik00NCA2MiBDNTIgNTQgNjYgNTYgNzAgNjYgQzYyIDYyIDUyIDYyIDQ0IDcwIFoiIGZpbGw9IiNFNzg4M0EiLz48cGF0aCBkPSJNNzAgNjAgQzcwIDQwIDc4IDI2IDkwIDI2IEMxMDAgMjYgMTA0IDM2IDEwMCA0NiBDOTYgNTYgODggNjIgODQgNzIgWiIgZmlsbD0iI0Q5N0EyQiIvPjxwYXRoIGQ9Ik04NCAyMiBDODIgMTQgODggMTAgOTEgMTYgQzkyIDkgOTkgOSA5OCAxNyBDMTAyIDEzIDEwNyAxNyAxMDIgMjMgWiIgZmlsbD0iI0UxMUQyRSIvPjxwYXRoIGQ9Ik0xMDAgMzQgbDEyIDQgLTEyIDUgWiIgZmlsbD0iI0Y1QjMwMSIvPjxwYXRoIGQ9Ik05OCA0NiBDMTAyIDQ4IDEwNCA1NCA5OSA1NyBDOTUgNTUgOTUgNDkgOTggNDYgWiIgZmlsbD0iI0UxMUQyRSIvPjxjaXJjbGUgY3g9IjkyIiBjeT0iMzMiIHI9IjMuNCIgZmlsbD0iIzExMSIvPjxjaXJjbGUgY3g9IjkzIiBjeT0iMzIiIHI9IjEuMSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+      <div class="logoflip" aria-label="SB FOOD logo"><img class="face f1" alt="Zinda chicken" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NyIgZmlsbD0iI0ZGRjhFNyIgc3Ryb2tlPSIjQTMwRTBFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNDQgOTYgbC00IDEyIE00MCAxMDggaC03IE00MCAxMDggaDYgTTY0IDk2IGwyIDEyIE02NiAxMDggaC03IE02NiAxMDggaDciIHN0cm9rZT0iI0UwOEEwMCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0yMiA1MiBDMTQgNDAgMTggMjYgMjggMzAgQzI2IDM4IDMwIDQ0IDM0IDQ2IFoiIGZpbGw9IiM4QjNBMEUiLz48cGF0aCBkPSJNMjAgNjAgQzE2IDQ2IDI0IDM2IDMyIDQwIEMzMCA0OCAzNCA1NCAzOCA1NiBaIiBmaWxsPSIjQjU1MzFBIi8+PGVsbGlwc2UgY3g9IjU0IiBjeT0iNzAiIHJ4PSIzMiIgcnk9IjI2IiBmaWxsPSIjQzg2NTFFIi8+PHBhdGggZD0iTTM2IDY2IEM0NiA4NCA3MCA4OCA4MiA3NCBDNzYgOTIgNTAgOTYgMzggODIgWiIgZmlsbD0iIzlDNEExNCIvPjxwYXRoIGQ9Ik00NCA2MiBDNTIgNTQgNjYgNTYgNzAgNjYgQzYyIDYyIDUyIDYyIDQ0IDcwIFoiIGZpbGw9IiNFNzg4M0EiLz48cGF0aCBkPSJNNzAgNjAgQzcwIDQwIDc4IDI2IDkwIDI2IEMxMDAgMjYgMTA0IDM2IDEwMCA0NiBDOTYgNTYgODggNjIgODQgNzIgWiIgZmlsbD0iI0Q5N0EyQiIvPjxwYXRoIGQ9Ik04NCAyMiBDODIgMTQgODggMTAgOTEgMTYgQzkyIDkgOTkgOSA5OCAxNyBDMTAyIDEzIDEwNyAxNyAxMDIgMjMgWiIgZmlsbD0iI0UxMUQyRSIvPjxwYXRoIGQ9Ik0xMDAgMzQgbDEyIDQgLTEyIDUgWiIgZmlsbD0iI0Y1QjMwMSIvPjxwYXRoIGQ9Ik05OCA0NiBDMTAyIDQ4IDEwNCA1NCA5OSA1NyBDOTUgNTUgOTUgNDkgOTggNDYgWiIgZmlsbD0iI0UxMUQyRSIvPjxjaXJjbGUgY3g9IjkyIiBjeT0iMzMiIHI9IjMuNCIgZmlsbD0iIzExMSIvPjxjaXJjbGUgY3g9IjkzIiBjeT0iMzIiIHI9IjEuMSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg=="><img class="face f2" alt="SB FOOD" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NyIgZmlsbD0iI0EzMEUwRSIgc3Ryb2tlPSIjRkZGM0Q2IiBzdHJva2Utd2lkdGg9IjQiLz48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI0OSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRjVCMzAxIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1kYXNoYXJyYXk9IjQgNCIvPjx0ZXh0IHg9IjYwIiB5PSI2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsIEJsYWNrLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI5MDAiIGZvbnQtc2l6ZT0iNDQiIGZpbGw9IiNGRkYzRDYiPlNCPC90ZXh0Pjx0ZXh0IHg9IjYwIiB5PSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZvbnQtc2l6ZT0iMTciIGxldHRlci1zcGFjaW5nPSIzIiBmaWxsPSIjRjVCMzAxIj5GT09EPC90ZXh0PjxwYXRoIGQ9Ik00OCAyNCBDNDcgMTcgNTMgMTQgNTYgMjAgQzU3IDEzIDY0IDEzIDYzIDIxIEM2NyAxNyA3MiAyMSA2NyAyNyBaIiBmaWxsPSIjRjVCMzAxIi8+PC9zdmc+"></div>
       <div class="contact">NUNTUN: 8178357317, 7011155231</div>
       <div class="co">SB FOOD</div>
       <div class="hd-row">
