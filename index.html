@@ -21,6 +21,7 @@ button,input{font-family:inherit;color:inherit}
 .btn{display:inline-flex;align-items:center;gap:6px;height:38px;padding:0 12px;border:1px solid #CBD5C0;border-radius:9px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap}
 .btn:active{transform:translateY(1px)}
 .btn.pr{background:#14532D;color:#fff;border-color:#14532D}
+.btn.pdf{background:#A30E0E;color:#fff;border-color:#A30E0E}
 .btn.wa{background:#25D366;color:#fff;border-color:#1DA851}
 .settings{display:none;max-width:860px;margin:0 auto;padding:0 14px 12px;gap:10px 16px;flex-wrap:wrap;font-size:13px;font-weight:600}
 .settings.show{display:flex}
@@ -120,8 +121,9 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     <button class="btn" id="btnNew">🧾 Naya Bill</button>
     <button class="btn" id="btnRow">＋ Line</button>
     <button class="btn" id="btnSet">⚙️ Rate</button>
-    <button class="btn pr" id="btnPrint">🖨️ Print / PDF</button>
-    <button class="btn wa" id="btnWa"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.1z"/></svg>WhatsApp PDF</button>
+    <button class="btn pdf" id="btnPdf">⬇️ PDF Download</button>
+    <button class="btn pr" id="btnPrint">🖨️ Print</button>
+    <button class="btn wa" id="btnWa"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.1.1.6-.1 1.1z"/></svg>WhatsApp par Share</button>
   </div>
   <div class="settings" id="settings">
     <span class="rule">Labour (har line ke average se): 2.5 kg se kam → Qty ÷ 9 × 5 · 2.5–2.99 → ÷ 8 × 5 · 3 kg+ → ÷ 7 × 5</span>
@@ -638,13 +640,21 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
   }
 
 
-  function sharePdfBill() {
+  function makePdf() {
     var m = compute();
-    if (!m.total && !m.bal) { toast('Pehle Qty, Weight aur Rate bhariye'); return; }
+    if (!m.total && !m.bal) { toast('Pehle Qty, Weight aur Rate bhariye'); return null; }
     var cv = billCanvas(), blob = jpegPdf(cv.toDataURL('image/jpeg', 0.92), cv.width, cv.height);
     var nm = bill.name.trim() || 'Customer';
     var fname = ('SB FOOD ' + nm + ' ' + dateText(bill.date)).replace(/[^\w\- ]+/g, '').replace(/\s+/g, '-') + '.pdf';
-    sharePdf(blob, fname, 'SB FOOD · ' + nm + ' · ' + dateText(bill.date) + ' · G. Total ' + C.formatINR(m.grand));
+    return { blob: blob, fname: fname, msg: 'SB FOOD · ' + nm + ' · ' + dateText(bill.date) + ' · G. Total ' + C.formatINR(m.grand) };
+  }
+  function sharePdfBill() { var p = makePdf(); if (p) sharePdf(p.blob, p.fname, p.msg); }
+  function downloadPdf() {
+    var p = makePdf(); if (!p) return;
+    var a = document.createElement('a'); a.href = URL.createObjectURL(p.blob); a.download = p.fname;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
+    toast('PDF download ho gayi');
   }
 
   var toastT;
@@ -680,6 +690,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     $('btnRow').addEventListener('click', function () { bill.rows.push(blankRow()); renderRows(); update(); var l = document.querySelectorAll('#rows tr'); l[l.length - 1].querySelector('input').focus(); });
     $('btnPrint').addEventListener('click', function () { document.activeElement && document.activeElement.blur(); setTimeout(function () { window.print(); }, 50); });
     $('btnWa').addEventListener('click', sharePdfBill);
+    $('btnPdf').addEventListener('click', downloadPdf);
     $('btnSet').addEventListener('click', function () { $('settings').classList.toggle('show'); });
   }
 
