@@ -431,7 +431,7 @@
     var cx = [X]; for (var k = 0; k < 5; k++) cx.push(cx[k] + cw[k]);
     var addr = [SHOP.address1, SHOP.address2].filter(Boolean);
     var headH = 250 + addr.length * 10;
-    var H = 40 + headH + RH * 2 + RH * nLines + RH * 9 + 90;
+    var H = 40 + headH + RH * 2 + RH * nLines + RH * 9 + 200;
     var cv = document.createElement('canvas'); cv.width = W * S; cv.height = H * S;
     var g = cv.getContext('2d'); g.scale(S, S);
     g.fillStyle = '#F1F8DF'; g.fillRect(0, 0, W, H);
@@ -489,7 +489,7 @@
     sumRow('Received', m.rec ? money(m.rec) : '—');
     var gt = (m.totalBill || m.bal || m.rec) ? (m.grand < 0 ? '−' + money(-m.grand) : money(m.grand)) : '';
     sumRow('G. TOTAL', gt, COL.green);
-    if (m.grand > 0) { var sp = 170; try { g.drawImage(makeStamp(billCode(m), sp * 2), cx[4] + cw[4] * 0.4 - sp / 2, y - RH / 2 - sp / 2 - 8, sp, sp); } catch (e) {} }
+    if (m.grand > 0) { var sp = 170; try { g.drawImage(makeStamp(billCode(m), sp * 2), cx[4] + cw[4] * 0.4 - sp / 2, y - 12, sp, sp); } catch (e) {} }
     if (m.grand > 0) { var w = C.amountInWords(m.grand); t(w, cx[5], y + 30, fit(w, 18, IW, 500), '#444', 500, 'right'); }
     return cv;
   }

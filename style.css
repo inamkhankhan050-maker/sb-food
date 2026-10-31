@@ -28,7 +28,7 @@ button,input{font-family:inherit;color:inherit}
 .bill{background:var(--light);border:2px solid var(--line);position:relative}
 .stampcell{position:relative;overflow:visible}
 .stampcell #tGrand{position:relative;z-index:1}
-.stamp{position:absolute;left:40%;top:50%;width:clamp(78px,60%,135px);height:auto;aspect-ratio:1;transform:translate(-50%,-58%);pointer-events:none;z-index:2;opacity:.82;mix-blend-mode:multiply;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.stamp{position:absolute;left:40%;top:100%;width:clamp(70px,55%,120px);height:auto;aspect-ratio:1;transform:translate(-50%,-18%);pointer-events:none;z-index:2;opacity:.82;mix-blend-mode:multiply;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .hd{background:var(--green);border-bottom:2px solid var(--line);text-align:center;position:relative}
 
 .contact{color:var(--red2);font-weight:700;font-size:clamp(13px,3.4vw,20px);padding:10px 8px 0}
@@ -127,6 +127,7 @@ button,input{font-family:inherit;color:inherit}
 @media print{.shm{display:none!important}}
 
 .btn.clr{color:#B71C1C;border-color:#E8B4B4}
+
 
 .calc-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;background:#EEF2F0;border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(0,0,0,.12);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
 .calc-bar.show{display:block}
