@@ -32,7 +32,9 @@ button,input{font-family:inherit;color:inherit}
 
 /* bill */
 .page{max-width:860px;margin:0 auto;padding:16px 10px 40px}
-.bill{background:var(--light);border:2px solid var(--line)}
+.bill{background:var(--light);border:2px solid var(--line);position:relative}
+.stampcell{position:relative;overflow:visible}
+.stamp{position:absolute;left:58%;top:50%;width:min(140px,max(86px,125%));height:auto;aspect-ratio:1;transform:translate(-50%,-64%);pointer-events:none;z-index:5;opacity:.88;mix-blend-mode:multiply;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .hd{background:var(--green);border-bottom:2px solid var(--line);text-align:center;position:relative}
 
 .contact{color:var(--red2);font-weight:700;font-size:clamp(13px,3.4vw,20px);padding:10px 8px 0}
@@ -562,8 +564,62 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     m.rows.forEach(function (r, i) { var el = $('avg' + i); if (el) el.textContent = (r.q > 0 && r.g > 0 && !r.bad) ? 'avg ' + C.averageKg(r.g, r.q) + ' · ÷' + r.div : ''; });
     $('words').textContent = m.grand > 0 ? C.amountInWords(m.grand) : '';
     $('dateTxt').textContent = dateText(bill.date);
+    placeStamp(m);
     save();
     return m;
+  }
+
+
+  /* ---------- Rubber stamp (SB FOOD · SHOP NO 48 · NUNTUN) ---------- */
+  function billCode(m) {
+    var str = bill.date + '|' + (bill.name || '').trim().toUpperCase() + '|' + m.grand + '|' + m.total + '|' + m.qty + '|' + m.grams, h = 5381;
+    for (var i = 0; i < str.length; i++) h = ((h * 33) ^ str.charCodeAt(i)) >>> 0;
+    var d = (bill.date || '').split('-');
+    return 'SB' + (d[2] || '') + (d[1] || '') + '-' + h.toString(36).toUpperCase().slice(-5);
+  }
+  function makeStamp(code, px) {
+    var cv = document.createElement('canvas'), R = px / 2; cv.width = cv.height = px;
+    var g = cv.getContext('2d'), INK = '#1C3FAA', F = '"Arial Black","Segoe UI",Arial,sans-serif';
+    g.translate(R, R); g.rotate(-0.21);
+    g.strokeStyle = g.fillStyle = INK;
+    g.lineWidth = R * 0.07; g.beginPath(); g.arc(0, 0, R * 0.92, 0, 7); g.stroke();
+    g.lineWidth = R * 0.025; g.beginPath(); g.arc(0, 0, R * 0.70, 0, 7); g.stroke();
+    function arc(txt, rad, size, top) {
+      g.font = '900 ' + size + 'px ' + F; g.textAlign = 'center'; g.textBaseline = 'middle';
+      var ws = txt.split('').map(function (c) { return g.measureText(c).width * 1.08; }), tot = ws.reduce(function (a, b) { return a + b; }, 0) / rad;
+      var a = top ? -Math.PI / 2 - tot / 2 : Math.PI / 2 + tot / 2;
+      txt.split('').forEach(function (c, i) {
+        var da = ws[i] / rad, m = top ? a + da / 2 : a - da / 2;
+        g.save(); g.translate(Math.cos(m) * rad, Math.sin(m) * rad); g.rotate(top ? m + Math.PI / 2 : m - Math.PI / 2); g.fillText(c, 0, 0); g.restore();
+        a = top ? a + da : a - da;
+      });
+    }
+    arc('SB FOOD ★ SHOP NO. 48', R * 0.81, R * 0.17, true);
+    arc('★ GHAZIPUR DELHI ★', R * 0.81, R * 0.14, false);
+    g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '900 ' + (R * 0.29) + 'px ' + F; g.fillText('NUNTUN', 0, -R * 0.06, R * 1.25);
+    g.lineWidth = R * 0.03; g.beginPath(); g.moveTo(-R * 0.55, -R * 0.26); g.lineTo(R * 0.55, -R * 0.26); g.moveTo(-R * 0.55, R * 0.14); g.lineTo(R * 0.55, R * 0.14); g.stroke();
+    g.font = '800 ' + (R * 0.11) + 'px ' + F; g.fillText('ORIGINAL BILL', 0, -R * 0.38);
+    g.font = '700 ' + (R * 0.105) + 'px "Courier New",monospace'; g.fillText(code, 0, R * 0.27);
+    // rubber-ink texture: knock out tiny specks (same pattern for the same bill)
+    g.setTransform(1, 0, 0, 1, 0, 0); g.globalCompositeOperation = 'destination-out';
+    var seed = 0; for (var i = 0; i < code.length; i++) seed = (seed * 31 + code.charCodeAt(i)) >>> 0;
+    function rnd() { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }
+    for (var k = 0; k < px * 1.1; k++) { g.globalAlpha = 0.3 + rnd() * 0.5; g.beginPath(); g.arc(rnd() * px, rnd() * px, rnd() * px * 0.012 + 0.4, 0, 7); g.fill(); }
+    g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+    return cv;
+  }
+  var stampKey = '';
+  function placeStamp(m) {
+    var el = $('stamp');
+    if (!(m.grand > 0)) { if (el) el.style.display = 'none'; return; }
+    if (!el) {
+      var cell = $('tGrand').parentNode.cells[0]; cell.classList.add('stampcell');
+      el = document.createElement('img'); el.id = 'stamp'; el.className = 'stamp'; el.alt = 'SB FOOD stamp'; cell.appendChild(el);
+    }
+    var code = billCode(m);
+    if (code !== stampKey) { try { el.src = makeStamp(code, 360).toDataURL('image/png'); } catch (e) {} stampKey = code; el.title = 'Bill code ' + code; }
+    el.style.display = '';
   }
 
   /* ---------- Canvas (for WhatsApp PDF) — same look as the printed bill ---------- */
@@ -638,6 +694,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     sumRow('Received', m.rec ? money(m.rec) : '—');
     var gt = (m.totalBill || m.bal || m.rec) ? (m.grand < 0 ? '−' + money(-m.grand) : money(m.grand)) : '';
     sumRow('G. TOTAL', gt, COL.green);
+    if (m.grand > 0) { var sp = 210; try { g.drawImage(makeStamp(billCode(m), sp * 2), cx[0] + (cw[0] + cw[1]) / 2 - sp / 2 + 18, y - RH * 1.5 - sp / 2 - 6, sp, sp); } catch (e) {} }
     if (m.grand > 0) { var w = C.amountInWords(m.grand); t(w, cx[5], y + 30, fit(w, 18, IW, 500), '#444', 500, 'right'); }
     return cv;
   }
