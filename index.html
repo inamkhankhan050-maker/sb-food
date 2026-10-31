@@ -34,7 +34,8 @@ button,input{font-family:inherit;color:inherit}
 .page{max-width:860px;margin:0 auto;padding:16px 10px 40px}
 .bill{background:var(--light);border:2px solid var(--line);position:relative}
 .stampcell{position:relative;overflow:visible}
-.stamp{position:absolute;left:58%;top:50%;width:min(140px,max(86px,125%));height:auto;aspect-ratio:1;transform:translate(-50%,-64%);pointer-events:none;z-index:5;opacity:.88;mix-blend-mode:multiply;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.stampcell #tGrand{position:relative;z-index:1}
+.stamp{position:absolute;left:40%;top:50%;width:clamp(78px,60%,135px);height:auto;aspect-ratio:1;transform:translate(-50%,-58%);pointer-events:none;z-index:2;opacity:.82;mix-blend-mode:multiply;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .hd{background:var(--green);border-bottom:2px solid var(--line);text-align:center;position:relative}
 
 .contact{color:var(--red2);font-weight:700;font-size:clamp(13px,3.4vw,20px);padding:10px 8px 0}
@@ -195,7 +196,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
         <tr><td colspan="2"></td><td class="g lb">Total Bill</td><td></td><td class="g v ra" id="tBill"></td></tr>
         <tr><td colspan="2"></td><td class="lb">Last Balance</td><td></td><td class="ra"><input id="bal" class="n ra" inputmode="decimal" data-f="oldBal" aria-label="Last Balance"></td></tr>
         <tr><td colspan="2"></td><td class="lb">Received</td><td></td><td class="ra"><input id="rec" class="n ra" inputmode="decimal" data-f="cash" placeholder="—" aria-label="Received"></td></tr>
-        <tr><td colspan="2"></td><td class="g lb">G. TOTAL</td><td></td><td class="g v ra" id="tGrand"></td></tr>
+        <tr><td colspan="2"></td><td class="g lb">G. TOTAL</td><td></td><td class="g v ra stampcell"><span id="tGrand"></span></td></tr>
       </tbody>
     </table>
     <div class="words" id="words"></div>
@@ -614,7 +615,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     var el = $('stamp');
     if (!(m.grand > 0)) { if (el) el.style.display = 'none'; return; }
     if (!el) {
-      var cell = $('tGrand').parentNode.cells[0]; cell.classList.add('stampcell');
+      var cell = $('tGrand').parentNode;
       el = document.createElement('img'); el.id = 'stamp'; el.className = 'stamp'; el.alt = 'SB FOOD stamp'; cell.appendChild(el);
     }
     var code = billCode(m);
@@ -694,7 +695,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     sumRow('Received', m.rec ? money(m.rec) : '—');
     var gt = (m.totalBill || m.bal || m.rec) ? (m.grand < 0 ? '−' + money(-m.grand) : money(m.grand)) : '';
     sumRow('G. TOTAL', gt, COL.green);
-    if (m.grand > 0) { var sp = 210; try { g.drawImage(makeStamp(billCode(m), sp * 2), cx[0] + (cw[0] + cw[1]) / 2 - sp / 2 + 18, y - RH * 1.5 - sp / 2 - 6, sp, sp); } catch (e) {} }
+    if (m.grand > 0) { var sp = 170; try { g.drawImage(makeStamp(billCode(m), sp * 2), cx[4] + cw[4] * 0.4 - sp / 2, y - RH / 2 - sp / 2 - 8, sp, sp); } catch (e) {} }
     if (m.grand > 0) { var w = C.amountInWords(m.grand); t(w, cx[5], y + 30, fit(w, 18, IW, 500), '#444', 500, 'right'); }
     return cv;
   }
