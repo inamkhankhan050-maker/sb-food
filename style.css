@@ -25,7 +25,7 @@ button,input{font-family:inherit;color:inherit}
 
 /* bill */
 .page{max-width:860px;margin:0 auto;padding:16px 10px 40px}
-.bill{background:var(--light);border:2px solid var(--dark);border-radius:10px;overflow:hidden;position:relative}
+.bill{background:var(--light);border:2px solid var(--dark);border-radius:10px;position:relative}
 .stampcell{position:relative;overflow:visible}
 .stampcell #tGrand{position:relative;z-index:1}
 .stamp{position:absolute;left:40%;top:100%;width:clamp(70px,55%,120px);height:auto;aspect-ratio:1;transform:translate(-50%,-18%);pointer-events:none;z-index:2;opacity:.82;mix-blend-mode:multiply;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -65,7 +65,7 @@ button,input{font-family:inherit;color:inherit}
 .tb input::placeholder{color:#8A9478;font-weight:500}
 .sum td{height:50px}
 .note{font-size:11px!important;font-weight:500!important;color:#4B5563;text-align:center;line-height:1.2;padding:0 2px!important}
-.words{text-align:right;font-size:13px;color:#374151;padding:8px 10px;font-style:italic;border-top:1px solid var(--line);background:#FFF7ED}
+.words{text-align:left;font-size:13px;color:#431407;padding:8px 46% 8px 10px;min-height:96px;border-radius:0 0 8px 8px;font-style:italic;border-top:1px solid var(--line);background:#FFF7ED}
 .words:empty{display:none}
 .tip{font-size:13px;color:var(--muted);text-align:center;margin:12px 8px 0}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:#111;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.2s;z-index:80;max-width:90vw;text-align:center}
@@ -90,7 +90,7 @@ button,input{font-family:inherit;color:inherit}
   .sum td{height:31px}
   .c-a .avg{display:none}
   .note{font-size:9px!important}
-  .words{font-size:11px;padding:4px 8px}
+  .words{font-size:11px;padding:6px 44% 6px 8px;min-height:78px}
   .tip{display:none}
 }
 
