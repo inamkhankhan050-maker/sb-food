@@ -32,7 +32,9 @@ button,input{font-family:inherit;color:inherit}
 /* bill */
 .page{max-width:860px;margin:0 auto;padding:16px 10px 40px}
 .bill{background:var(--light);border:2px solid var(--line)}
-.hd{background:var(--green);border-bottom:2px solid var(--line);text-align:center}
+.hd{background:var(--green);border-bottom:2px solid var(--line);text-align:center;position:relative}
+.hen{position:absolute;left:8px;top:clamp(30px,6vw,44px);width:clamp(54px,14vw,96px);height:auto;animation:peck 2.4s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes peck{0%,70%,100%{transform:rotate(0)}78%{transform:rotate(-8deg)}86%{transform:rotate(4deg)}}
 .contact{color:var(--red2);font-weight:700;font-size:clamp(13px,3.4vw,20px);padding:10px 8px 0}
 .co{color:var(--red);font-weight:800;font-size:clamp(46px,13vw,80px);line-height:1.15;letter-spacing:.5px;padding:2px 0 6px}
 .hd-row{display:grid;grid-template-columns:62.8% 17.1% 20.1%;align-items:stretch}
@@ -85,6 +87,7 @@ button,input{font-family:inherit;color:inherit}
   .tb input::placeholder{color:transparent}
   .tb input:focus{box-shadow:none;background:transparent}
   .note{color:transparent!important}
+  .hen{animation:none;width:90px}
   .c-a .avg{display:none}
   .co{font-size:72px}.contact{font-size:18px}.tb th,.tb td{font-size:19px;height:40px}.tb input{min-height:38px}
 }
@@ -136,6 +139,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
 <main class="page">
   <div class="bill" id="bill">
     <div class="hd">
+      <img class="hen" alt="Zinda chicken" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NyIgZmlsbD0iI0ZGRjhFNyIgc3Ryb2tlPSIjQTMwRTBFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNDQgOTYgbC00IDEyIE00MCAxMDggaC03IE00MCAxMDggaDYgTTY0IDk2IGwyIDEyIE02NiAxMDggaC03IE02NiAxMDggaDciIHN0cm9rZT0iI0UwOEEwMCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0yMiA1MiBDMTQgNDAgMTggMjYgMjggMzAgQzI2IDM4IDMwIDQ0IDM0IDQ2IFoiIGZpbGw9IiM4QjNBMEUiLz48cGF0aCBkPSJNMjAgNjAgQzE2IDQ2IDI0IDM2IDMyIDQwIEMzMCA0OCAzNCA1NCAzOCA1NiBaIiBmaWxsPSIjQjU1MzFBIi8+PGVsbGlwc2UgY3g9IjU0IiBjeT0iNzAiIHJ4PSIzMiIgcnk9IjI2IiBmaWxsPSIjQzg2NTFFIi8+PHBhdGggZD0iTTM2IDY2IEM0NiA4NCA3MCA4OCA4MiA3NCBDNzYgOTIgNTAgOTYgMzggODIgWiIgZmlsbD0iIzlDNEExNCIvPjxwYXRoIGQ9Ik00NCA2MiBDNTIgNTQgNjYgNTYgNzAgNjYgQzYyIDYyIDUyIDYyIDQ0IDcwIFoiIGZpbGw9IiNFNzg4M0EiLz48cGF0aCBkPSJNNzAgNjAgQzcwIDQwIDc4IDI2IDkwIDI2IEMxMDAgMjYgMTA0IDM2IDEwMCA0NiBDOTYgNTYgODggNjIgODQgNzIgWiIgZmlsbD0iI0Q5N0EyQiIvPjxwYXRoIGQ9Ik04NCAyMiBDODIgMTQgODggMTAgOTEgMTYgQzkyIDkgOTkgOSA5OCAxNyBDMTAyIDEzIDEwNyAxNyAxMDIgMjMgWiIgZmlsbD0iI0UxMUQyRSIvPjxwYXRoIGQ9Ik0xMDAgMzQgbDEyIDQgLTEyIDUgWiIgZmlsbD0iI0Y1QjMwMSIvPjxwYXRoIGQ9Ik05OCA0NiBDMTAyIDQ4IDEwNCA1NCA5OSA1NyBDOTUgNTUgOTUgNDkgOTggNDYgWiIgZmlsbD0iI0UxMUQyRSIvPjxjaXJjbGUgY3g9IjkyIiBjeT0iMzMiIHI9IjMuNCIgZmlsbD0iIzExMSIvPjxjaXJjbGUgY3g9IjkzIiBjeT0iMzIiIHI9IjEuMSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
       <div class="contact">NUNTUN: 8178357317, 7011155231</div>
       <div class="co">SB FOOD</div>
       <div class="hd-row">
@@ -154,6 +158,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
       <tbody id="rows"></tbody>
       <tbody class="sum">
         <tr><td class="g v" id="tQty"></td><td class="g v" id="tWt"></td><td class="g lb">Total</td><td></td><td class="g v ra" id="tAmt"></td></tr>
+        <tr class="avgrow"><td colspan="2"></td><td class="lb">Average</td><td></td><td class="v ra" id="tAvg"></td></tr>
         <tr><td colspan="2"></td><td class="lb">Samiti</td><td></td><td class="v ra" id="tSam"></td></tr>
         <tr><td colspan="2"></td><td class="lb">Labour</td><td class="note no-print-txt" id="labNote"></td><td class="v ra" id="tLab"></td></tr>
         <tr><td colspan="2"></td><td class="g lb">Total Bill</td><td></td><td class="g v ra" id="tBill"></td></tr>
@@ -518,6 +523,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     $('tQty').textContent = m.qty ? C.formatInt(m.qty) : '';
     $('tWt').textContent = m.grams ? C.formatKg(m.grams) : '';
     $('tAmt').textContent = m.total ? money(m.total) : '';
+    $('tAvg').textContent = (m.qty && m.grams) ? C.averageKg(m.grams, m.qty) + ' kg' : '';
     $('tSam').textContent = m.total ? money(m.samiti) : '';
     $('tLab').textContent = m.total ? money(m.labour) : '';
     $('tBill').textContent = m.totalBill ? money(m.totalBill) : '';
@@ -532,6 +538,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
   }
 
   /* ---------- Canvas (for WhatsApp PDF) — same look as the printed bill ---------- */
+  var HEN = new Image(); HEN.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI1NyIgZmlsbD0iI0ZGRjhFNyIgc3Ryb2tlPSIjQTMwRTBFIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNDQgOTYgbC00IDEyIE00MCAxMDggaC03IE00MCAxMDggaDYgTTY0IDk2IGwyIDEyIE02NiAxMDggaC03IE02NiAxMDggaDciIHN0cm9rZT0iI0UwOEEwMCIgc3Ryb2tlLXdpZHRoPSIzLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0yMiA1MiBDMTQgNDAgMTggMjYgMjggMzAgQzI2IDM4IDMwIDQ0IDM0IDQ2IFoiIGZpbGw9IiM4QjNBMEUiLz48cGF0aCBkPSJNMjAgNjAgQzE2IDQ2IDI0IDM2IDMyIDQwIEMzMCA0OCAzNCA1NCAzOCA1NiBaIiBmaWxsPSIjQjU1MzFBIi8+PGVsbGlwc2UgY3g9IjU0IiBjeT0iNzAiIHJ4PSIzMiIgcnk9IjI2IiBmaWxsPSIjQzg2NTFFIi8+PHBhdGggZD0iTTM2IDY2IEM0NiA4NCA3MCA4OCA4MiA3NCBDNzYgOTIgNTAgOTYgMzggODIgWiIgZmlsbD0iIzlDNEExNCIvPjxwYXRoIGQ9Ik00NCA2MiBDNTIgNTQgNjYgNTYgNzAgNjYgQzYyIDYyIDUyIDYyIDQ0IDcwIFoiIGZpbGw9IiNFNzg4M0EiLz48cGF0aCBkPSJNNzAgNjAgQzcwIDQwIDc4IDI2IDkwIDI2IEMxMDAgMjYgMTA0IDM2IDEwMCA0NiBDOTYgNTYgODggNjIgODQgNzIgWiIgZmlsbD0iI0Q5N0EyQiIvPjxwYXRoIGQ9Ik04NCAyMiBDODIgMTQgODggMTAgOTEgMTYgQzkyIDkgOTkgOSA5OCAxNyBDMTAyIDEzIDEwNyAxNyAxMDIgMjMgWiIgZmlsbD0iI0UxMUQyRSIvPjxwYXRoIGQ9Ik0xMDAgMzQgbDEyIDQgLTEyIDUgWiIgZmlsbD0iI0Y1QjMwMSIvPjxwYXRoIGQ9Ik05OCA0NiBDMTAyIDQ4IDEwNCA1NCA5OSA1NyBDOTUgNTUgOTUgNDkgOTggNDYgWiIgZmlsbD0iI0UxMUQyRSIvPjxjaXJjbGUgY3g9IjkyIiBjeT0iMzMiIHI9IjMuNCIgZmlsbD0iIzExMSIvPjxjaXJjbGUgY3g9IjkzIiBjeT0iMzIiIHI9IjEuMSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==';
   var COL = { green: '#B4E03C', light: '#EAF6C7', grey: '#7D7D84', red: '#A30E0E', red2: '#C0392B', ink: '#111', cream: '#FFF3D6', line: '#9AA58A' };
   function billCanvas() {
     var m = compute();
@@ -544,7 +551,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     var cx = [X]; for (var k = 0; k < 5; k++) cx.push(cx[k] + cw[k]);
     var addr = [SHOP.address1, SHOP.address2].filter(Boolean);
     var headH = 250 + addr.length * 10;
-    var H = 40 + headH + RH * 2 + RH * nLines + RH * 8 + 90;
+    var H = 40 + headH + RH * 2 + RH * nLines + RH * 9 + 90;
     var cv = document.createElement('canvas'); cv.width = W * S; cv.height = H * S;
     var g = cv.getContext('2d'); g.scale(S, S);
     g.fillStyle = '#F1F8DF'; g.fillRect(0, 0, W, H);
@@ -556,6 +563,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     box(X, y, IW, headH, COL.green);
     t(SHOP.contact, W / 2, y + 30, fit(SHOP.contact, 24, IW - 30, 700), COL.red2, 700, 'center');
     t(SHOP.company, W / 2, y + 100, 84, COL.red, 800, 'center');
+    try { if (HEN.complete && HEN.naturalWidth !== 0) g.drawImage(HEN, X + 14, y + 52, 110, 110); else if (HEN.complete) g.drawImage(HEN, X + 14, y + 52, 110, 110); } catch (e) {}
     var dy = y + 160;
     box(cx[3], dy, cw[3], RH, COL.green); t('Date', cx[3] + cw[3] / 2, dy + RH / 2, 26, COL.ink, 700, 'center');
     box(cx[4], dy, cw[4], RH, COL.cream); t(dateText(bill.date), cx[4] + cw[4] / 2, dy + RH / 2, 24, COL.ink, 600, 'center');
@@ -593,6 +601,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
       y += RH;
     }
     sumRow('Total', m.total ? money(m.total) : '', COL.green, [m.qty ? C.formatInt(m.qty) : '', m.grams ? C.formatKg(m.grams) : '']);
+    sumRow('Average', (m.qty && m.grams) ? C.averageKg(m.grams, m.qty) + ' kg' : '');
     sumRow('Samiti', m.total ? money(m.samiti) : '');
     sumRow('Labour', m.total ? money(m.labour) : '');
     sumRow('Total Bill', m.totalBill ? money(m.totalBill) : '', COL.green);
