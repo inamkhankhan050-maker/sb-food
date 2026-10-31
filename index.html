@@ -124,6 +124,15 @@ button,input{font-family:inherit;color:inherit}
 @keyframes flipA{0%,40%{transform:rotateY(0) scale(1)}10%{transform:rotateY(0) rotate(-8deg)}20%{transform:rotateY(0) rotate(4deg)}50%,90%{transform:rotateY(180deg)}100%{transform:rotateY(360deg)}}
 @keyframes flipB{0%,40%{transform:rotateY(-180deg)}50%,90%{transform:rotateY(0) scale(1)}70%{transform:rotateY(0) scale(1.08)}100%{transform:rotateY(180deg)}}
 
+.shm{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:90}
+.shm.show{display:flex}
+.shbox{background:#fff;width:100%;max-width:420px;border-radius:16px 16px 0 0;padding:16px 14px 20px;display:flex;flex-direction:column;gap:10px;text-align:center;font-size:16px}
+.shbox .btn.shb{height:52px!important;font-size:17px!important;flex-direction:row!important;gap:8px!important;justify-content:center;background:#25D366;color:#fff;border-color:#25D366}
+.shbox .btn.shb.pdf{background:#B71C1C;border-color:#B71C1C}
+.shbox .btn.shx{height:42px;justify-content:center}
+@media (min-width:521px){.shm{align-items:center}.shbox{border-radius:16px}}
+@media print{.shm{display:none!important}}
+
 .calc-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;background:#EEF2F0;border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(0,0,0,.12);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
 .calc-bar.show{display:block}
 .cb-top{display:flex;align-items:baseline;gap:8px;padding:2px 6px 6px}
@@ -168,6 +177,10 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
   <div class="notice" id="notice">Is preview mein auto-save band hai. Asli link par bill phone mein save rahega.</div>
 </header>
 
+<div class="shm no-print" id="shareMenu"><div class="shbox"><b>WhatsApp par kaise bhejein?</b>
+  <button class="btn shb" id="shImg"><i>🖼️</i><span>Photo bhejo</span></button>
+  <button class="btn shb pdf" id="shPdf"><i>📄</i><span>PDF bhejo</span></button>
+  <button class="btn shx" id="shX">Band karo</button></div></div>
 <main class="page">
   <div class="bill" id="bill">
     <div class="hd">
@@ -719,8 +732,9 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     add(x + 'trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF');
     return new Blob(parts, { type: 'application/pdf' });
   }
-  function sharePdf(blob, fname, msg) {
-    var file = null; try { file = new File([blob], fname, { type: 'application/pdf' }); } catch (e) {}
+  function sharePdf(blob, fname, msg, kind) {
+    kind = kind || 'PDF';
+    var file = null; try { file = new File([blob], fname, { type: blob.type || 'application/pdf' }); } catch (e) {}
     if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
       navigator.share({ files: [file], text: msg }).catch(function (e) { if (e && e.name !== 'AbortError') fallback(); });
       return;
@@ -731,7 +745,7 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(function () { URL.revokeObjectURL(a.href); }, 60000);
       try { window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank'); } catch (e) {}
-      toast('PDF download ho gayi. WhatsApp mein 📎 se attach karke bhejiye');
+      toast(kind + ' download ho gayi. WhatsApp mein 📎 se attach karke bhejiye');
     }
   }
 
@@ -744,7 +758,19 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     var fname = ('SB FOOD ' + nm + ' ' + dateText(bill.date)).replace(/[^\w\- ]+/g, '').replace(/\s+/g, '-') + '.pdf';
     return { blob: blob, fname: fname, msg: 'SB FOOD · ' + nm + ' · ' + dateText(bill.date) + ' · G. Total ' + C.formatINR(m.grand) };
   }
-  function sharePdfBill() { var p = makePdf(); if (p) sharePdf(p.blob, p.fname, p.msg); }
+  function sharePdfBill() { closeShare(); var p = makePdf(); if (p) sharePdf(p.blob, p.fname, p.msg, 'PDF'); }
+  function sharePhotoBill() {
+    closeShare();
+    var m = compute();
+    if (!m.total && !m.bal) { toast('Pehle Qty, Weight aur Rate bhariye'); return; }
+    var url = billCanvas().toDataURL('image/jpeg', 0.92), bin = atob(url.split(',')[1]), u = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i);
+    var blob = new Blob([u], { type: 'image/jpeg' }), nm = bill.name.trim() || 'Customer';
+    var fname = ('SB FOOD ' + nm + ' ' + dateText(bill.date)).replace(/[^\w\- ]+/g, '').replace(/\s+/g, '-') + '.jpg';
+    sharePdf(blob, fname, 'SB FOOD · ' + nm + ' · ' + dateText(bill.date) + ' · G. Total ' + C.formatINR(m.grand), 'Photo');
+  }
+  function openShare() { $('shareMenu').classList.add('show'); }
+  function closeShare() { var e = $('shareMenu'); if (e) e.classList.remove('show'); }
   function downloadPdf() {
     var p = makePdf(); if (!p) return;
     var a = document.createElement('a'); a.href = URL.createObjectURL(p.blob); a.download = p.fname;
@@ -788,7 +814,11 @@ body.calc-on:has(.calc-bar.pad){padding-bottom:300px}
     $('btnNew').addEventListener('click', newBill);
     $('btnRow').addEventListener('click', function () { bill.rows.push(blankRow()); renderRows(); update(); var l = document.querySelectorAll('#rows tr'); l[l.length - 1].querySelector('input').focus(); });
     $('btnPrint').addEventListener('click', function () { document.activeElement && document.activeElement.blur(); setTimeout(function () { window.print(); }, 50); });
-    $('btnWa').addEventListener('click', sharePdfBill);
+    $('btnWa').addEventListener('click', openShare);
+    $('shPdf').addEventListener('click', sharePdfBill);
+    $('shImg').addEventListener('click', sharePhotoBill);
+    $('shX').addEventListener('click', closeShare);
+    $('shareMenu').addEventListener('click', function (e) { if (e.target === this) closeShare(); });
     $('btnPdf').addEventListener('click', downloadPdf);
     $('btnSet').addEventListener('click', function () { $('settings').classList.toggle('show'); });
   }
